@@ -1,15 +1,18 @@
 package com.github.princesslana.greedorama;
 
-import com.github.princesslana.smalld.SmallD;
 import disparse.discord.smalld.Dispatcher;
+import org.flywaydb.core.Flyway;
 
 public class Greedorama {
 
   public static void main(String[] args) {
-    var smalld = SmallD.create(Config.getToken());
+    Flyway.configure().dataSource(Config.getDataSource()).load().migrate();
 
     var disparse =
-        new Dispatcher.Builder(Greedorama.class).withSmalldClient(smalld).prefix("$$").build();
+        new Dispatcher.Builder(Greedorama.class)
+            .withSmalldClient(Config.getSmallD())
+            .prefix("$$")
+            .build();
 
     Dispatcher.init(disparse);
 

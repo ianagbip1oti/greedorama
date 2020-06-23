@@ -20,12 +20,12 @@ public class Quote {
   }
 
   @CommandHandler(commandName = "quote")
-  public DiscordResponse quote(DiscordRequest req) {
-    if (req.getArgs().size() != 1) {
+  public DiscordResponse quote() {
+    if (request.getArgs().size() != 1) {
       return DiscordResponse.of(Emoji.ERROR + " You may only get a quote for one stock");
     }
 
-    var symbol = req.getArgs().get(0);
+    var symbol = request.getArgs().get(0);
     return stocks
         .getStock(symbol)
         .map(
