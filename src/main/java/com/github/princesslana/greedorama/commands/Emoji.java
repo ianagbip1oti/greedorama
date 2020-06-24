@@ -1,11 +1,11 @@
-package com.github.princesslana.greedorama;
+package com.github.princesslana.greedorama.commands;
 
 public class Emoji {
   private Emoji() {}
 
-  public static final String ERROR = "\u274c";
+  public static final String ERROR = " \u274c";
 
-  public static final String INFO = "\u2139";
+  public static final String INFO = " \u2139";
 
   public static final String PRICE = "\uD83C\uDFF7\uFE0F";
 

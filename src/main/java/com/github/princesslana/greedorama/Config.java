@@ -9,9 +9,10 @@ import org.apache.derby.jdbc.EmbeddedDataSource;
 
 public class Config {
 
-  private static final StockRepository STOCKS = new StockRepository();
+  private static final SmallD SMALLD = SmallD.create(getToken());
 
-  private static final SmallD SMALLD = Smalld.create(getToken());
+  private static final PortfolioRepository PORTFOLIOS = new PortfolioRepository();
+  private static final StockRepository STOCKS = new StockRepository();
 
   public static SmallD getSmallD() {
     return SMALLD;
@@ -39,5 +40,10 @@ public class Config {
   @Injectable
   public static StockRepository getStockRepository() {
     return STOCKS;
+  }
+
+  @Injectable
+  public static PortfolioRepository getPortfolioRepository() {
+    return PORTFOLIOS;
   }
 }

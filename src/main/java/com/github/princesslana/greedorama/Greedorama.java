@@ -16,6 +16,6 @@ public class Greedorama {
 
     Dispatcher.init(disparse);
 
-    smalld.run();
+    Config.getSmallD().run();
   }
 }

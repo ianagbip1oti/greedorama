@@ -24,15 +24,15 @@ public class Stock {
   }
 
   public BigDecimal getLatestPrice() {
-    return new BigDecimal(json.get("latestPrice").asText());
+    return getDecimal("latestPrice");
   }
 
   public BigDecimal getChange() {
-    return new BigDecimal(json.get("change").asText());
+    return getDecimal("change");
   }
 
   public BigDecimal getChangePercent() {
-    return new BigDecimal(json.get("changePercent").asText()).setScale(2, RoundingMode.HALF_UP);
+    return getDecimal("changePercent");
   }
 
   static Stock parse(String input) throws IOException {
@@ -41,5 +41,9 @@ public class Stock {
     var json = (JrsObject) parser.treeFrom(input);
 
     return new Stock(json);
+  }
+
+  private BigDecimal getDecimal(String key) {
+    return new BigDecimal(json.get(key).asText()).setScale(2, RoundingMode.HALF_UP);
   }
 }
