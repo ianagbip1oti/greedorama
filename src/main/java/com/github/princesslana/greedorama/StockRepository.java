@@ -19,37 +19,37 @@ public class StockRepository {
 
   private final HttpClient http = HttpClient.newHttpClient();
 
-  private Cache<String, Optional<Stock>> stocks =
+  private final Cache<String, Optional<Stock>> stocks =
       CacheBuilder.newBuilder().maximumSize(1500).expireAfterWrite(15, TimeUnit.MINUTES).build();
 
   public Optional<Stock> getStock(String symbol) {
     try {
-      return stocks.get(
-          symbol,
-          () -> {
-            var request =
-                HttpRequest.newBuilder()
-                    .GET()
-                    .uri(
-                        URI.create(
-                            "https://cloud.iexapis.com/stable/stock/"
-                                + symbol
-                                + "/quote?displayPercent=true&token="
-                                + Config.getIexPublicKey()))
-                    .build();
-
-            try {
-              var response = http.send(request, HttpResponse.BodyHandlers.ofString());
-
-              return response.statusCode() == 200
-                  ? Optional.of(Stock.parse(response.body()))
-                  : Optional.empty();
-            } catch (IOException e) {
-              LOG.warn("Error fetching stock: {}", symbol, e);
-              return Optional.empty();
-            }
-          });
+      return stocks.get(symbol, () -> this.fetch(symbol));
     } catch (ExecutionException e) {
+      LOG.warn("Error fetching stock: {}", symbol, e);
+      return Optional.empty();
+    }
+  }
+
+  private Optional<Stock> fetch(String symbol) {
+    var request =
+        HttpRequest.newBuilder()
+            .GET()
+            .uri(
+                URI.create(
+                    "https://cloud.iexapis.com/stable/stock/"
+                        + symbol
+                        + "/quote?displayPercent=true&token="
+                        + Config.getIexPublicKey()))
+            .build();
+
+    try {
+      var response = http.send(request, HttpResponse.BodyHandlers.ofString());
+
+      return response.statusCode() == 200
+          ? Optional.of(Stock.parse(response.body()))
+          : Optional.empty();
+    } catch (IOException | InterruptedException e) {
       LOG.warn("Error fetching stock: {}", symbol, e);
       return Optional.empty();
     }

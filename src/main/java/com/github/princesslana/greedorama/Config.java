@@ -13,6 +13,7 @@ public class Config {
 
   private static final PortfolioRepository PORTFOLIOS = new PortfolioRepository();
   private static final StockRepository STOCKS = new StockRepository();
+  private static final UserRepository USERS = new UserRepository(SMALLD);
 
   public static SmallD getSmallD() {
     return SMALLD;
@@ -45,5 +46,10 @@ public class Config {
   @Injectable
   public static PortfolioRepository getPortfolioRepository() {
     return PORTFOLIOS;
+  }
+
+  @Injectable
+  public static UserRepository getUserRepository() {
+    return USERS;
   }
 }

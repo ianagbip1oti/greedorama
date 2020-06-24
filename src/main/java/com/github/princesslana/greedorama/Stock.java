@@ -1,9 +1,6 @@
 package com.github.princesslana.greedorama;
 
-import com.fasterxml.jackson.jr.ob.JSON;
-import com.fasterxml.jackson.jr.stree.JacksonJrsTreeCodec;
 import com.fasterxml.jackson.jr.stree.JrsObject;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -35,12 +32,8 @@ public class Stock {
     return getDecimal("changePercent");
   }
 
-  static Stock parse(String input) throws IOException {
-    var parser = JSON.builder().treeCodec(new JacksonJrsTreeCodec()).build();
-
-    var json = (JrsObject) parser.treeFrom(input);
-
-    return new Stock(json);
+  static Stock parse(String input) {
+    return new Stock(Json.parse(input));
   }
 
   private BigDecimal getDecimal(String key) {
