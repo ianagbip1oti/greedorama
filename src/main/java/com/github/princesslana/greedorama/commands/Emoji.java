@@ -11,4 +11,6 @@ public class Emoji {
 
   public static final String UPWARDS_TREND = "\uD83D\uDCC8";
   public static final String DOWNWARDS_TREND = "\uD83D\uDCC9";
+
+  public static final String BUY = "\uD83D\uDED2";
 }

@@ -1,5 +1,6 @@
 package com.github.princesslana.greedorama.commands;
 
+import disparse.discord.smalld.DiscordResponse;
 import java.util.Locale;
 import javax.money.MonetaryAmount;
 import javax.money.format.AmountFormatQueryBuilder;
@@ -15,5 +16,9 @@ public class Format {
             AmountFormatQueryBuilder.of(Locale.US).set(CurrencyStyle.SYMBOL).build());
 
     return fmt.format(amt);
+  }
+
+  public static DiscordResponse error(String msg) {
+    return DiscordResponse.of(String.format("```%s %s```", Emoji.ERROR, msg));
   }
 }

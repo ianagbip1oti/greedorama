@@ -5,7 +5,6 @@ import com.google.common.base.Joiner;
 import disparse.discord.smalld.DiscordRequest;
 import disparse.discord.smalld.DiscordResponse;
 import disparse.parser.reflection.CommandHandler;
-import java.math.BigDecimal;
 
 public class QuoteCommand {
 
@@ -21,33 +20,27 @@ public class QuoteCommand {
   @CommandHandler(commandName = "quote")
   public DiscordResponse quote() {
     if (request.getArgs().size() != 1) {
-      return error("You may only get a quote for one stock");
+      return Format.error("You may only get a quote for one stock");
     }
 
     var symbol = request.getArgs().get(0);
     return stocks
-        .getStock(symbol)
+        .get(symbol)
         .map(
             s -> {
               var info = String.format("%s %s: %s", Emoji.INFO, s.getSymbol(), s.getCompanyName());
-              var price = String.format("%s $%s", Emoji.PRICE, s.getLatestPrice());
+              var price = String.format("%s %s", Emoji.PRICE, Format.money(s.getLatestPrice()));
 
               var change = s.getChange();
-              var changeEmoji =
-                  change.compareTo(BigDecimal.ZERO) < 0
-                      ? Emoji.DOWNWARDS_TREND
-                      : Emoji.UPWARDS_TREND;
+              var changeEmoji = change.isNegative() ? Emoji.DOWNWARDS_TREND : Emoji.UPWARDS_TREND;
 
               var changeText =
-                  String.format("%s $%s (%s%%)", changeEmoji, change, s.getChangePercent());
+                  String.format(
+                      "%s %s (%s%%)", changeEmoji, Format.money(change), s.getChangePercent());
 
               return DiscordResponse.of(
                   Joiner.on("\n").join("```", info, price, changeText, "```"));
             })
-        .orElse(error(" Could not find quote for " + symbol));
-  }
-
-  private static DiscordResponse error(String msg) {
-    return DiscordResponse.of(String.format("```%s %s```", Emoji.ERROR, msg));
+        .orElse(Format.error("Could not find quote for " + symbol));
   }
 }

@@ -22,7 +22,7 @@ public class StockRepository {
   private final Cache<String, Optional<Stock>> stocks =
       CacheBuilder.newBuilder().maximumSize(1500).expireAfterWrite(15, TimeUnit.MINUTES).build();
 
-  public Optional<Stock> getStock(String symbol) {
+  public Optional<Stock> get(String symbol) {
     try {
       return stocks.get(symbol, () -> this.fetch(symbol));
     } catch (ExecutionException e) {

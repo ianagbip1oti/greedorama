@@ -3,6 +3,8 @@ package com.github.princesslana.greedorama;
 import com.fasterxml.jackson.jr.stree.JrsObject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import javax.money.MonetaryAmount;
+import org.javamoney.moneta.Money;
 
 public class Stock {
 
@@ -20,12 +22,12 @@ public class Stock {
     return json.get("symbol").asText();
   }
 
-  public BigDecimal getLatestPrice() {
-    return getDecimal("latestPrice");
+  public MonetaryAmount getLatestPrice() {
+    return getMoney("latestPrice");
   }
 
-  public BigDecimal getChange() {
-    return getDecimal("change");
+  public MonetaryAmount getChange() {
+    return getMoney("change");
   }
 
   public BigDecimal getChangePercent() {
@@ -34,6 +36,10 @@ public class Stock {
 
   static Stock parse(String input) {
     return new Stock(Json.parse(input));
+  }
+
+  private MonetaryAmount getMoney(String key) {
+    return Money.of(getDecimal(key), "USD");
   }
 
   private BigDecimal getDecimal(String key) {
