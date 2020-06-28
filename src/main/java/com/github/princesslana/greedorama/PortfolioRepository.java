@@ -7,15 +7,13 @@ import java.util.function.UnaryOperator;
 
 public class PortfolioRepository {
 
-  // Currently the key is guildId + userId
-  // This isn't great, but is only until we use the db instead of in memory
   private Map<String, Portfolio> store = new HashMap<>();
 
-  public Portfolio get(String guildId, String userId) {
-    return Optional.ofNullable(store.get(guildId + userId)).orElse(new Portfolio());
+  public Portfolio get(User user) {
+    return Optional.ofNullable(store.get(user.getId())).orElse(new Portfolio());
   }
 
-  public void with(String guildId, String userId, UnaryOperator<Portfolio> op) {
-    store.put(guildId + userId, op.apply(get(guildId, userId)));
+  public void with(User user, UnaryOperator<Portfolio> op) {
+    store.put(user.getId(), op.apply(get(user)));
   }
 }

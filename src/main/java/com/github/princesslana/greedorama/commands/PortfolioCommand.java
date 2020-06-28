@@ -34,8 +34,8 @@ public class PortfolioCommand {
     var guildId = request.getDispatcher().guildFromEvent(request.getEvent());
     var userId = request.getDispatcher().identityFromEvent(request.getEvent());
 
-    var portfolio = portfolios.get(guildId, userId);
-    var user = users.get(userId);
+    var user = users.get(guildId, userId);
+    var portfolio = portfolios.get(user);
 
     var info = String.format("%s %s", Emoji.INFO, user.getTag());
     var worth = String.format("%s %s", Emoji.PRICE, Format.money(portfolio.getNetWorth(stocks)));

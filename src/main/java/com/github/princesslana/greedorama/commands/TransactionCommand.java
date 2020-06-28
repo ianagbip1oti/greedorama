@@ -3,6 +3,7 @@ package com.github.princesslana.greedorama.commands;
 import com.github.princesslana.greedorama.PortfolioRepository;
 import com.github.princesslana.greedorama.StockRepository;
 import com.github.princesslana.greedorama.Transaction;
+import com.github.princesslana.greedorama.UserRepository;
 import disparse.discord.smalld.DiscordRequest;
 import disparse.discord.smalld.DiscordResponse;
 import disparse.parser.reflection.CommandHandler;
@@ -15,11 +16,17 @@ public class TransactionCommand {
 
   private final StockRepository stocks;
 
+  private final UserRepository users;
+
   public TransactionCommand(
-      DiscordRequest request, PortfolioRepository portfolios, StockRepository stocks) {
+      DiscordRequest request,
+      PortfolioRepository portfolios,
+      StockRepository stocks,
+      UserRepository users) {
     this.request = request;
     this.portfolios = portfolios;
     this.stocks = stocks;
+    this.users = users;
   }
 
   @CommandHandler(commandName = "buy")
@@ -31,13 +38,14 @@ public class TransactionCommand {
     var symbol = request.getArgs().get(0);
     var guildId = request.getDispatcher().guildFromEvent(request.getEvent());
     var userId = request.getDispatcher().identityFromEvent(request.getEvent());
+    var user = users.get(guildId, userId);
 
     return stocks
         .get(symbol)
         .map(
             s -> {
               var txn = new Transaction(s, 1);
-              portfolios.with(guildId, userId, p -> p.addTransaction(txn));
+              portfolios.with(user, p -> p.addTransaction(txn));
               return DiscordResponse.of(
                   String.format(
                       "```%s You bought 1 share of (%s) %s for %s```",

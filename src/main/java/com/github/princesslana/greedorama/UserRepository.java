@@ -21,16 +21,16 @@ public class UserRepository {
     this.smalld = smalld;
   }
 
-  public User get(String userId) {
+  public User get(String guildId, String userId) {
     try {
-      return users.get(userId, () -> this.fetch(userId));
+      return users.get(guildId + ":" + userId, () -> this.fetch(guildId, userId));
     } catch (ExecutionException e) {
       LOG.warn("Error fetching user: {}", userId);
       throw new RuntimeException(e);
     }
   }
 
-  private User fetch(String userId) {
-    return User.parse(smalld.get("/users/" + userId));
+  private User fetch(String guildId, String userId) {
+    return User.parse(guildId, smalld.get("/users/" + userId));
   }
 }
