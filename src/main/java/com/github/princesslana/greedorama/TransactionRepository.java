@@ -45,7 +45,8 @@ public class TransactionRepository {
                 .bind("created_at", txn.getWhen())
                 .bind("symbol", txn.getSymbol())
                 .bind("quantity", txn.getQuantity())
-                .bind("unit_price", txn.getUnitPrice().getNumber().numberValueExact(BigDecimal.class))
+                .bind(
+                    "unit_price", txn.getUnitPrice().getNumber().numberValueExact(BigDecimal.class))
                 .execute());
   }
 }
