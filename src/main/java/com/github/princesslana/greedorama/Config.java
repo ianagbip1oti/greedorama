@@ -6,12 +6,14 @@ import disparse.parser.reflection.Injectable;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.apache.derby.jdbc.EmbeddedDataSource;
+import org.jdbi.v3.core.Jdbi;
 
 public class Config {
 
   private static final SmallD SMALLD = SmallD.create(getToken());
 
-  private static final TransactionRepository TRANSACTIONS = new TransactionRepository();
+  private static final Jdbi JDBI = Jdbi.create(getDataSource());
+  private static final TransactionRepository TRANSACTIONS = new TransactionRepository(JDBI);
   private static final PortfolioRepository PORTFOLIOS = new PortfolioRepository(TRANSACTIONS);
   private static final StockRepository STOCKS = new StockRepository();
   private static final UserRepository USERS = new UserRepository(SMALLD);

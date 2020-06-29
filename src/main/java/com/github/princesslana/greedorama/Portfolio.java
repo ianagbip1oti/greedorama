@@ -55,7 +55,7 @@ public class Portfolio {
         .stream()
         .collect(
             Collectors.groupingBy(
-                Transaction::getSymbol, Collectors.summingInt(Transaction::getAmount)));
+                Transaction::getSymbol, Collectors.summingInt(Transaction::getQuantity)));
   }
 
   public Portfolio addTransaction(Transaction tx) {
