@@ -17,7 +17,7 @@ public class Portfolio {
     this(ImmutableList.of());
   }
 
-  private Portfolio(Iterable<Transaction> transactions) {
+  public Portfolio(Iterable<Transaction> transactions) {
     this.transactions = ImmutableList.copyOf(transactions);
   }
 
