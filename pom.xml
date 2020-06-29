@@ -10,6 +10,7 @@
     <lib.flyway.version>6.4.4</lib.flyway.version>
     <lib.guava.version>29.0-jre</lib.guava.version>
     <lib.jackson-jr.version>2.11.0</lib.jackson-jr.version>
+    <lib.jdbi.version>3.14.1</lib.jdbi.version>
     <lib.moneta.version>1.1</lib.moneta.version>
     <lib.smalld.version>0.2.5</lib.smalld.version>
     <lib.slf4j.version>2.0.0-alpha1</lib.slf4j.version>
@@ -61,6 +62,11 @@
       <groupId>com.fasterxml.jackson.jr</groupId>
       <artifactId>jackson-jr-objects</artifactId>
       <version>${lib.jackson-jr.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jdbi</groupId>
+      <artifactId>jdbi3-core</artifactId>
+      <version>${lib.jdbi.version}</version>
     </dependency>
     <dependency>
       <groupId>org.javamoney</groupId>

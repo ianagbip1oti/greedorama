@@ -1,6 +1,5 @@
 package com.github.princesslana.greedorama;
 
-
 public class PortfolioRepository {
 
   private final TransactionRepository transactions;

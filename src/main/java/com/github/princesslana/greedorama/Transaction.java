@@ -8,15 +8,15 @@ public class Transaction {
   private final String userId;
   private final Instant when;
   private final String symbol;
-  private final int amount;
+  private final int quantity;
   private final MonetaryAmount unitPrice;
 
   public Transaction(
-      String userId, Instant when, String symbol, int amount, MonetaryAmount unitPrice) {
+      String userId, Instant when, String symbol, int quantity, MonetaryAmount unitPrice) {
     this.userId = userId;
     this.when = when;
     this.symbol = symbol;
-    this.amount = amount;
+    this.quantity = quantity;
     this.unitPrice = unitPrice;
   }
 
@@ -24,20 +24,28 @@ public class Transaction {
     return userId;
   }
 
-  public int getAmount() {
-    return amount;
+  public Instant getWhen() {
+    return when;
+  }
+
+  public int getQuantity() {
+    return quantity;
   }
 
   public String getSymbol() {
     return symbol;
   }
 
-  public MonetaryAmount getTotalPrice() {
-    return unitPrice.multiply(amount);
+  public MonetaryAmount getUnitPrice() {
+    return unitPrice;
   }
 
-  public static Transaction buy(User who, Stock stock, int amount) {
+  public MonetaryAmount getTotalPrice() {
+    return unitPrice.multiply(quantity);
+  }
+
+  public static Transaction buy(User who, Stock stock, int quantity) {
     return new Transaction(
-        who.getId(), Instant.now(), stock.getSymbol(), amount, stock.getLatestPrice());
+        who.getId(), Instant.now(), stock.getSymbol(), quantity, stock.getLatestPrice());
   }
 }
