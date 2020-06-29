@@ -44,7 +44,7 @@ public class TransactionCommand {
         .get(symbol)
         .map(
             s -> {
-              var txn = new Transaction(s, 1);
+              var txn = Transaction.buy(user, s, 1);
               portfolios.with(user, p -> p.addTransaction(txn));
               return DiscordResponse.of(
                   String.format(
