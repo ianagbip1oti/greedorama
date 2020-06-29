@@ -20,6 +20,10 @@ public class Transaction {
     this.unitPrice = unitPrice;
   }
 
+  public String getUserId() {
+    return userId;
+  }
+
   public int getAmount() {
     return amount;
   }
