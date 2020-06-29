@@ -49,7 +49,10 @@ public class TransactionCommand {
               return DiscordResponse.of(
                   String.format(
                       "```%s You bought 1 share of (%s) %s for %s```",
-                      Emoji.BUY, symbol, s.getCompanyName(), Format.money(txn.getTotalPrice())));
+                      Emoji.BUY,
+                      s.getSymbol(),
+                      s.getCompanyName(),
+                      Format.money(txn.getTotalPrice())));
             })
         .orElse(Format.error("Could not find price for " + symbol));
   }
