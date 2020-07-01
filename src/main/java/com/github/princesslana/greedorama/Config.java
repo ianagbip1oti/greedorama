@@ -3,17 +3,12 @@ package com.github.princesslana.greedorama;
 import com.github.princesslana.smalld.SmallD;
 import com.google.common.base.Preconditions;
 import disparse.parser.reflection.Injectable;
-import java.util.Optional;
-import javax.sql.DataSource;
-import org.apache.derby.jdbc.EmbeddedDataSource;
-import org.jdbi.v3.core.Jdbi;
 
 public class Config {
 
   private static final SmallD SMALLD = SmallD.create(getToken());
 
-  private static final Jdbi JDBI = Jdbi.create(getDataSource());
-  private static final TransactionRepository TRANSACTIONS = new TransactionRepository(JDBI);
+  private static final TransactionRepository TRANSACTIONS = new TransactionRepository();
   private static final PortfolioRepository PORTFOLIOS = new PortfolioRepository(TRANSACTIONS);
   private static final StockRepository STOCKS = new StockRepository();
   private static final UserRepository USERS = new UserRepository(SMALLD);
@@ -28,17 +23,6 @@ public class Config {
 
   public static String getIexPublicKey() {
     return Preconditions.checkNotNull(System.getenv("GOR_IEX_PUBLIC"));
-  }
-
-  public static DataSource getDataSource() {
-    var dataDir = Optional.ofNullable(System.getenv("GOR_DATA")).orElse("data/");
-
-    var dbName = dataDir + "greedorama.db";
-
-    var dataSource = new EmbeddedDataSource();
-    dataSource.setDatabaseName(dbName);
-    dataSource.setCreateDatabase("create");
-    return dataSource;
   }
 
   @Injectable

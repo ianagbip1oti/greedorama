@@ -1,12 +1,17 @@
 package com.github.princesslana.greedorama.commands;
 
+import com.github.princesslana.greedorama.Portfolio;
 import com.github.princesslana.greedorama.PortfolioRepository;
 import com.github.princesslana.greedorama.StockRepository;
 import com.github.princesslana.greedorama.UserRepository;
+import com.google.common.base.Ascii;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Ordering;
 import disparse.discord.smalld.DiscordRequest;
 import disparse.discord.smalld.DiscordResponse;
 import disparse.parser.reflection.CommandHandler;
+import disparse.parser.reflection.Flag;
+import disparse.parser.reflection.ParsedEntity;
 
 public class PortfolioCommand {
 
@@ -29,8 +34,14 @@ public class PortfolioCommand {
     this.stocks = stocks;
   }
 
+  @ParsedEntity
+  private static class Options {
+    @Flag(shortName = 'v', longName = "verbose", description = "Display more detail")
+    public boolean verbose = false;
+  }
+
   @CommandHandler(commandName = "portfolio")
-  public DiscordResponse portfolio() {
+  public DiscordResponse portfolio(Options options) {
     var guildId = request.getDispatcher().guildFromEvent(request.getEvent());
     var userId = request.getDispatcher().identityFromEvent(request.getEvent());
 
@@ -43,9 +54,23 @@ public class PortfolioCommand {
     var cash = String.format("%16s CASH", Format.money(portfolio.getCash()));
 
     var stockList = new StringBuilder();
-    for (var entry : portfolio.getStocks(stocks)) {
-      stockList.append(
-          String.format("%16s %s%n", Format.money(entry.getWorth()), entry.getSymbol()));
+
+    var byNetWorth = Ordering.natural().reverse().onResultOf(Portfolio.Entry::getWorth);
+
+    for (var entry : byNetWorth.sortedCopy(portfolio.getStocks(stocks))) {
+      var line = String.format("%16s %-5s", Format.money(entry.getWorth()), entry.getSymbol());
+
+      if (options.verbose) {
+        line +=
+            String.format(
+                " %-20s %6d @ %10s (%7s)",
+                Ascii.truncate(entry.getCompanyName(), 20, "..."),
+                entry.getQuantity(),
+                Format.money(entry.getLatestPrice()),
+                Format.money(entry.getChange()));
+      }
+
+      stockList.append(line + "\n");
     }
 
     return DiscordResponse.of(Joiner.on("\n").join("```", info, worth, "", cash, stockList, "```"));

@@ -5,15 +5,13 @@
   <version>0-SNAPSHOT</version>
 
   <properties>
-    <lib.derby.version>10.15.2.0</lib.derby.version>
     <lib.disparse.version>master-SNAPSHOT</lib.disparse.version>
-    <lib.flyway.version>6.4.4</lib.flyway.version>
     <lib.guava.version>29.0-jre</lib.guava.version>
     <lib.jackson-jr.version>2.11.0</lib.jackson-jr.version>
-    <lib.jdbi.version>3.14.1</lib.jdbi.version>
     <lib.moneta.version>1.1</lib.moneta.version>
     <lib.smalld.version>0.2.5</lib.smalld.version>
     <lib.slf4j.version>2.0.0-alpha1</lib.slf4j.version>
+    <lib.somedb.version>master-SNAPSHOT</lib.somedb.version>
 
     <plugin.exec.version>1.6.0</plugin.exec.version>
     <plugin.shade.version>3.2.2</plugin.shade.version>
@@ -34,24 +32,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.derby</groupId>
-      <artifactId>derby</artifactId>
-      <version>${lib.derby.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.derby</groupId>
-      <artifactId>derbytools</artifactId>
-      <version>${lib.derby.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.github.boscojared.disparse</groupId>
       <artifactId>disparse-smalld</artifactId>
       <version>${lib.disparse.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-core</artifactId>
-      <version>${lib.flyway.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -62,11 +45,6 @@
       <groupId>com.fasterxml.jackson.jr</groupId>
       <artifactId>jackson-jr-objects</artifactId>
       <version>${lib.jackson-jr.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jdbi</groupId>
-      <artifactId>jdbi3-core</artifactId>
-      <version>${lib.jdbi.version}</version>
     </dependency>
     <dependency>
       <groupId>org.javamoney</groupId>
@@ -87,6 +65,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>${lib.slf4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.princesslana</groupId>
+      <artifactId>somedb</artifactId>
+      <version>${lib.somedb.version}</version>
     </dependency>
   </dependencies>
 

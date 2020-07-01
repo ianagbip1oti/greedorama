@@ -1,52 +1,44 @@
 package com.github.princesslana.greedorama;
 
+import com.github.princesslana.somedb.TheDB;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.javamoney.moneta.Money;
-import org.jdbi.v3.core.Jdbi;
 
 public class TransactionRepository {
 
-  private final Jdbi jdbi;
-
   private final List<Transaction> transactions = new ArrayList<>();
 
-  public TransactionRepository(Jdbi jdbi) {
-    this.jdbi = jdbi;
-  }
-
   public List<Transaction> getFor(User user) {
-    return jdbi.withHandle(
-        h ->
-            h.createQuery(
-                    "select user_id, created_at, symbol, quantity, unit_price "
-                        + " from transactions where user_id = :user_id")
-                .bind("user_id", user.getId())
-                .map(
-                    (rs, ctx) ->
-                        new Transaction(
-                            rs.getString("user_id"),
-                            rs.getTimestamp("created_at").toInstant(),
-                            rs.getString("symbol"),
-                            rs.getInt("quantity"),
-                            Money.of(rs.getBigDecimal("unit_price"), "USD")))
-                .list());
+    return TheDB.select(
+            TransactionRepository::fromResultSet,
+            "select user_id, created_at, symbol, quantity, unit_price "
+                + "from transactions where user_id = ?",
+            user.getId())
+        .collect(Collectors.toList());
   }
 
   public void add(Transaction txn) {
-    jdbi.useHandle(
-        h ->
-            h.createUpdate(
-                    "insert into transactions "
-                        + "(user_id, created_at, symbol, quantity, unit_price) "
-                        + " values(:user_id, :created_at, :symbol, :quantity, :unit_price)")
-                .bind("user_id", txn.getUserId())
-                .bind("created_at", txn.getWhen())
-                .bind("symbol", txn.getSymbol())
-                .bind("quantity", txn.getQuantity())
-                .bind(
-                    "unit_price", txn.getUnitPrice().getNumber().numberValueExact(BigDecimal.class))
-                .execute());
+    TheDB.execute(
+        "insert into transactions(user_id, created_at, symbol, quantity, unit_price) "
+            + "values(?, ?, ?, ?, ?)",
+        txn.getUserId(),
+        txn.getWhen(),
+        txn.getSymbol(),
+        txn.getQuantity(),
+        txn.getUnitPrice().getNumber().numberValueExact(BigDecimal.class));
+  }
+
+  public static Transaction fromResultSet(ResultSet rs) throws SQLException {
+    return new Transaction(
+        rs.getString("user_id"),
+        rs.getTimestamp("created_at").toInstant(),
+        rs.getString("symbol"),
+        rs.getInt("quantity"),
+        Money.of(rs.getBigDecimal("unit_price"), "USD"));
   }
 }

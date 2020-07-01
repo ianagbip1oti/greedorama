@@ -1,12 +1,12 @@
 package com.github.princesslana.greedorama;
 
+import com.github.princesslana.somedb.TheDB;
 import disparse.discord.smalld.Dispatcher;
-import org.flywaydb.core.Flyway;
 
 public class Greedorama {
 
   public static void main(String[] args) {
-    Flyway.configure().dataSource(Config.getDataSource()).load().migrate();
+    TheDB.initialize("greedorama");
 
     var disparse =
         new Dispatcher.Builder(Greedorama.class)
