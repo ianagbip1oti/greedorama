@@ -64,19 +64,35 @@ public class Portfolio {
 
   public static class Entry {
     private final Stock stock;
-    private final int amount;
+    private final int quantity;
 
-    private Entry(Stock stock, int amount) {
+    private Entry(Stock stock, int quantity) {
       this.stock = stock;
-      this.amount = amount;
+      this.quantity = quantity;
     }
 
     public String getSymbol() {
       return stock.getSymbol();
     }
 
+    public String getCompanyName() {
+      return stock.getCompanyName();
+    }
+
     public MonetaryAmount getWorth() {
-      return stock.getLatestPrice().multiply(amount);
+      return stock.getLatestPrice().multiply(quantity);
+    }
+
+    public MonetaryAmount getLatestPrice() {
+      return stock.getLatestPrice();
+    }
+
+    public MonetaryAmount getChange() {
+      return stock.getChange();
+    }
+
+    public int getQuantity() {
+      return quantity;
     }
   }
 }
