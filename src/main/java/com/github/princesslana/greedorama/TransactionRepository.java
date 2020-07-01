@@ -1,6 +1,6 @@
 package com.github.princesslana.greedorama;
 
-import com.github.princesslana.somedb.OneDB;
+import com.github.princesslana.somedb.TheDB;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,16 +11,10 @@ import org.javamoney.moneta.Money;
 
 public class TransactionRepository {
 
-  private final OneDB db;
-
   private final List<Transaction> transactions = new ArrayList<>();
 
-  public TransactionRepository(OneDB db) {
-    this.db = db;
-  }
-
   public List<Transaction> getFor(User user) {
-    return db.select(
+    return TheDB.select(
             TransactionRepository::fromResultSet,
             "select user_id, created_at, symbol, quantity, unit_price "
                 + "from transactions where user_id = ?",
@@ -29,7 +23,7 @@ public class TransactionRepository {
   }
 
   public void add(Transaction txn) {
-    db.execute(
+    TheDB.execute(
         "insert into transactions(user_id, created_at, symbol, quantity, unit_price) "
             + "values(?, ?, ?, ?, ?)",
         txn.getUserId(),

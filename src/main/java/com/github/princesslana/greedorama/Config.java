@@ -1,25 +1,17 @@
 package com.github.princesslana.greedorama;
 
 import com.github.princesslana.smalld.SmallD;
-import com.github.princesslana.somedb.OneDB;
 import com.google.common.base.Preconditions;
 import disparse.parser.reflection.Injectable;
-import java.util.Optional;
 
 public class Config {
 
   private static final SmallD SMALLD = SmallD.create(getToken());
 
-  private static final OneDB DATABASE = new OneDB("greedorama");
-
-  private static final TransactionRepository TRANSACTIONS = new TransactionRepository(DATABASE);
+  private static final TransactionRepository TRANSACTIONS = new TransactionRepository();
   private static final PortfolioRepository PORTFOLIOS = new PortfolioRepository(TRANSACTIONS);
   private static final StockRepository STOCKS = new StockRepository();
   private static final UserRepository USERS = new UserRepository(SMALLD);
-
-  public static OneDB getDatabase() {
-    return DATABASE;
-  }
 
   public static SmallD getSmallD() {
     return SMALLD;

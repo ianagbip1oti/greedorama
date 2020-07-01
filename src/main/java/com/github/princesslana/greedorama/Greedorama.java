@@ -1,11 +1,12 @@
 package com.github.princesslana.greedorama;
 
+import com.github.princesslana.somedb.TheDB;
 import disparse.discord.smalld.Dispatcher;
 
 public class Greedorama {
 
   public static void main(String[] args) {
-    Config.getDatabase().initialize();
+    TheDB.initialize("greedorama");
 
     var disparse =
         new Dispatcher.Builder(Greedorama.class)
