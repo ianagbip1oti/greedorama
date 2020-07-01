@@ -8,9 +8,10 @@ public class Config {
 
   private static final SmallD SMALLD = SmallD.create(getToken());
 
-  private static final TransactionRepository TRANSACTIONS = new TransactionRepository();
-  private static final PortfolioRepository PORTFOLIOS = new PortfolioRepository(TRANSACTIONS);
   private static final StockRepository STOCKS = new StockRepository();
+  private static final TransactionRepository TRANSACTIONS = new TransactionRepository();
+  private static final PortfolioRepository PORTFOLIOS =
+      new PortfolioRepository(STOCKS, TRANSACTIONS);
   private static final UserRepository USERS = new UserRepository(SMALLD);
 
   public static SmallD getSmallD() {

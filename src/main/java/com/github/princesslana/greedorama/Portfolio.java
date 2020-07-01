@@ -1,6 +1,8 @@
 package com.github.princesslana.greedorama;
 
 import com.google.common.collect.ImmutableList;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,18 +13,41 @@ public class Portfolio {
 
   private static final MonetaryAmount STARTING_CASH = Money.of(100000, "USD");
 
+  private final StockRepository stocks;
+
   private final ImmutableList<Transaction> transactions;
 
-  public Portfolio() {
-    this(ImmutableList.of());
+  public Portfolio(StockRepository stocks) {
+    this(stocks, ImmutableList.of());
   }
 
-  public Portfolio(Iterable<Transaction> transactions) {
+  public Portfolio(StockRepository stocks, Iterable<Transaction> transactions) {
+    this.stocks = stocks;
     this.transactions = ImmutableList.copyOf(transactions);
   }
 
-  public MonetaryAmount getNetWorth(StockRepository stocks) {
-    return getStocks(stocks).stream().map(Entry::getWorth).reduce(getCash(), MonetaryAmount::add);
+  public MonetaryAmount getNetWorth() {
+    return getStocks().stream().map(Entry::getWorth).reduce(getCash(), MonetaryAmount::add);
+  }
+
+  public MonetaryAmount getNetWorthChange() {
+    return getStocks()
+        .stream()
+        .map(s -> s.getChange().multiply(s.getQuantity()))
+        .reduce(Money.of(0, "USD"), MonetaryAmount::add);
+  }
+
+  public BigDecimal getNetWorthChangePercent() {
+    var now = getNetWorth();
+    var change = getNetWorthChange();
+    var old = now.subtract(change);
+
+    var changeD = change.getNumber().numberValueExact(Double.class);
+    var oldD = old.getNumber().numberValueExact(Double.class);
+
+    var changePct = changeD / oldD * 100.0;
+
+    return BigDecimal.valueOf(changePct).setScale(2, RoundingMode.HALF_UP);
   }
 
   public MonetaryAmount getCash() {
@@ -33,7 +58,7 @@ public class Portfolio {
         .reduce(STARTING_CASH, MonetaryAmount::add);
   }
 
-  public List<Entry> getStocks(StockRepository stocks) {
+  public List<Entry> getStocks() {
     return getStockCounts()
         .entrySet()
         .stream()
@@ -56,10 +81,6 @@ public class Portfolio {
         .collect(
             Collectors.groupingBy(
                 Transaction::getSymbol, Collectors.summingInt(Transaction::getQuantity)));
-  }
-
-  public Portfolio addTransaction(Transaction tx) {
-    return new Portfolio(ImmutableList.<Transaction>builder().addAll(transactions).add(tx).build());
   }
 
   public static class Entry {

@@ -2,7 +2,6 @@ package com.github.princesslana.greedorama.commands;
 
 import com.github.princesslana.greedorama.Portfolio;
 import com.github.princesslana.greedorama.PortfolioRepository;
-import com.github.princesslana.greedorama.StockRepository;
 import com.github.princesslana.greedorama.UserRepository;
 import com.google.common.base.Ascii;
 import com.google.common.base.Joiner;
@@ -21,17 +20,11 @@ public class PortfolioCommand {
 
   private final UserRepository users;
 
-  private final StockRepository stocks;
-
   public PortfolioCommand(
-      DiscordRequest request,
-      PortfolioRepository portfolios,
-      UserRepository users,
-      StockRepository stocks) {
+      DiscordRequest request, PortfolioRepository portfolios, UserRepository users) {
     this.request = request;
     this.portfolios = portfolios;
     this.users = users;
-    this.stocks = stocks;
   }
 
   @ParsedEntity
@@ -49,7 +42,15 @@ public class PortfolioCommand {
     var portfolio = portfolios.get(user);
 
     var info = String.format("%s %s", Emoji.INFO, user.getTag());
-    var worth = String.format("%s %s", Emoji.PRICE, Format.money(portfolio.getNetWorth(stocks)));
+    var worth = String.format("%s %s", Emoji.PRICE, Format.money(portfolio.getNetWorth()));
+
+    var change = portfolio.getNetWorthChange();
+    var changeEmoji = change.isNegative() ? Emoji.DOWNWARDS_TREND : Emoji.UPWARDS_TREND;
+
+    var changeText =
+        String.format(
+            "%s %s (%s%%)",
+            changeEmoji, Format.money(change), portfolio.getNetWorthChangePercent());
 
     var cash = String.format("%16s CASH", Format.money(portfolio.getCash()));
 
@@ -57,7 +58,7 @@ public class PortfolioCommand {
 
     var byNetWorth = Ordering.natural().reverse().onResultOf(Portfolio.Entry::getWorth);
 
-    for (var entry : byNetWorth.sortedCopy(portfolio.getStocks(stocks))) {
+    for (var entry : byNetWorth.sortedCopy(portfolio.getStocks())) {
       var line = String.format("%16s %-5s", Format.money(entry.getWorth()), entry.getSymbol());
 
       if (options.verbose) {
@@ -73,6 +74,7 @@ public class PortfolioCommand {
       stockList.append(line + "\n");
     }
 
-    return DiscordResponse.of(Joiner.on("\n").join("```", info, worth, "", cash, stockList, "```"));
+    return DiscordResponse.of(
+        Joiner.on("\n").join("```", info, worth, changeText, "", cash, stockList, "```"));
   }
 }
