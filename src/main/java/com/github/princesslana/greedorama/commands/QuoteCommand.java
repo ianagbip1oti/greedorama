@@ -38,8 +38,10 @@ public class QuoteCommand {
                   String.format(
                       "%s %s (%s%%)", changeEmoji, Format.money(change), s.getChangePercent());
 
+              var attribution = "Data provided by IEX Cloud: <https://iexcloud.io>";
+
               return DiscordResponse.of(
-                  Joiner.on("\n").join("```", info, price, changeText, "```"));
+                  Joiner.on("\n").join("```", info, price, changeText, "```", attribution));
             })
         .orElse(Format.error("Could not find quote for " + symbol));
   }
