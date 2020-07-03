@@ -11,7 +11,7 @@
     <lib.moneta.version>1.1</lib.moneta.version>
     <lib.smalld.version>0.2.5</lib.smalld.version>
     <lib.slf4j.version>2.0.0-alpha1</lib.slf4j.version>
-    <lib.somedb.version>master-SNAPSHOT</lib.somedb.version>
+    <lib.somedb.version>0.1.0</lib.somedb.version>
 
     <plugin.exec.version>1.6.0</plugin.exec.version>
     <plugin.shade.version>3.2.2</plugin.shade.version>
