@@ -7,6 +7,8 @@ import com.github.princesslana.greedorama.UserRepository;
 import disparse.discord.smalld.DiscordRequest;
 import disparse.discord.smalld.DiscordResponse;
 import disparse.parser.reflection.CommandHandler;
+import disparse.parser.reflection.Flag;
+import disparse.parser.reflection.ParsedEntity;
 
 public class TransactionCommand {
 
@@ -29,8 +31,17 @@ public class TransactionCommand {
     this.transactions = transactions;
   }
 
+  @ParsedEntity
+  private static class Options {
+    @Flag(shortName = 'n', longName = "number", description = "Number of shares (default: 1)")
+    public Integer number = 1;
+  }
+
   @CommandHandler(commandName = "buy")
-  public DiscordResponse buy() {
+  public DiscordResponse buy(Options options) {
+    if (options.number <= 0) {
+      return Format.error("Number of shares must be greater than zero");
+    }
     if (request.getArgs().size() != 1) {
       return Format.error("There should be exactly one stock symbol, but there isn't");
     }
@@ -44,12 +55,13 @@ public class TransactionCommand {
         .get(symbol)
         .map(
             s -> {
-              var txn = Transaction.buy(user, s, 1);
+              var txn = Transaction.buy(user, s, options.number);
               transactions.add(txn);
               return DiscordResponse.of(
                   String.format(
-                      "```%s You bought 1 share of (%s) %s for %s```",
+                      "```%s You bought %d share of (%s) %s for %s```",
                       Emoji.BUY,
+                      options.number,
                       s.getSymbol(),
                       s.getCompanyName(),
                       Format.money(txn.getTotalPrice())));
