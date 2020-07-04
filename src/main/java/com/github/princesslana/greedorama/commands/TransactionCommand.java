@@ -68,4 +68,37 @@ public class TransactionCommand {
             })
         .orElse(Format.error("Could not find price for " + symbol));
   }
+
+  @CommandHandler(commandName = "sell")
+  public DiscordResponse sell(Options options) {
+    if (options.number <= 0) {
+      return Format.error("Number of shares must be greater than zero");
+    }
+    if (request.getArgs().size() != 1) {
+      return Format.error("There should be exactly one stock symbol, but there isn't");
+    }
+
+    var symbol = request.getArgs().get(0);
+    var guildId = request.getDispatcher().guildFromEvent(request.getEvent());
+    var userId = request.getDispatcher().identityFromEvent(request.getEvent());
+    var user = users.get(guildId, userId);
+
+    return stocks
+            .get(symbol)
+            .map(
+                    s -> {
+                      var txn = Transaction.buy(user, s, -options.number);
+                      transactions.add(txn);
+                      return DiscordResponse.of(
+                              String.format(
+                                      "```%s You sold %d share of (%s) %s for %s```",
+                                      Emoji.BUY,
+                                      options.number,
+                                      s.getSymbol(),
+                                      s.getCompanyName(),
+                                      Format.money(txn.getTotalPrice().multiply(-1))));
+                    })
+            .orElse(Format.error("Could not find price for " + symbol));
+  }
+
 }
