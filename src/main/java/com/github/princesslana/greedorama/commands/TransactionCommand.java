@@ -84,21 +84,20 @@ public class TransactionCommand {
     var user = users.get(guildId, userId);
 
     return stocks
-            .get(symbol)
-            .map(
-                    s -> {
-                      var txn = Transaction.buy(user, s, -options.number);
-                      transactions.add(txn);
-                      return DiscordResponse.of(
-                              String.format(
-                                      "```%s You sold %d share of (%s) %s for %s```",
-                                      Emoji.BUY,
-                                      options.number,
-                                      s.getSymbol(),
-                                      s.getCompanyName(),
-                                      Format.money(txn.getTotalPrice().multiply(-1))));
-                    })
-            .orElse(Format.error("Could not find price for " + symbol));
+        .get(symbol)
+        .map(
+            s -> {
+              var txn = Transaction.buy(user, s, -options.number);
+              transactions.add(txn);
+              return DiscordResponse.of(
+                  String.format(
+                      "```%s You sold %d share of (%s) %s for %s```",
+                      Emoji.BUY,
+                      options.number,
+                      s.getSymbol(),
+                      s.getCompanyName(),
+                      Format.money(txn.getTotalPrice().multiply(-1))));
+            })
+        .orElse(Format.error("Could not find price for " + symbol));
   }
-
 }
