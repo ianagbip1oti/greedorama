@@ -37,8 +37,7 @@ public class TransactionCommand {
     public Integer number = 1;
   }
 
-  @CommandHandler(commandName = "buy")
-  public DiscordResponse buy(Options options) {
+  public DiscordResponse createTransaction(Options options, int quantity) {
     if (options.number <= 0) {
       return Format.error("Number of shares must be greater than zero");
     }
@@ -55,49 +54,29 @@ public class TransactionCommand {
         .get(symbol)
         .map(
             s -> {
-              var txn = Transaction.buy(user, s, options.number);
-              transactions.add(txn);
-              return DiscordResponse.of(
+              var txn = Transaction.buy(user, s, quantity);
+              var response =
                   String.format(
-                      "```%s You bought %d share of (%s) %s for %s```",
+                      "```%s You %s %d share of (%s) %s for %s```",
                       Emoji.BUY,
+                      (quantity > 0) ? "bought" : "sold",
                       options.number,
                       s.getSymbol(),
                       s.getCompanyName(),
-                      Format.money(txn.getTotalPrice())));
+                      Format.money(txn.getTotalPrice().abs()));
+              transactions.add(txn);
+              return DiscordResponse.of(response);
             })
         .orElse(Format.error("Could not find price for " + symbol));
   }
 
+  @CommandHandler(commandName = "buy")
+  public DiscordResponse buy(Options options) {
+    return createTransaction(options, options.number);
+  }
+
   @CommandHandler(commandName = "sell")
   public DiscordResponse sell(Options options) {
-    if (options.number <= 0) {
-      return Format.error("Number of shares must be greater than zero");
-    }
-    if (request.getArgs().size() != 1) {
-      return Format.error("There should be exactly one stock symbol, but there isn't");
-    }
-
-    var symbol = request.getArgs().get(0);
-    var guildId = request.getDispatcher().guildFromEvent(request.getEvent());
-    var userId = request.getDispatcher().identityFromEvent(request.getEvent());
-    var user = users.get(guildId, userId);
-
-    return stocks
-        .get(symbol)
-        .map(
-            s -> {
-              var txn = Transaction.buy(user, s, -options.number);
-              transactions.add(txn);
-              return DiscordResponse.of(
-                  String.format(
-                      "```%s You sold %d share of (%s) %s for %s```",
-                      Emoji.BUY,
-                      options.number,
-                      s.getSymbol(),
-                      s.getCompanyName(),
-                      Format.money(txn.getTotalPrice().multiply(-1))));
-            })
-        .orElse(Format.error("Could not find price for " + symbol));
+    return createTransaction(options, -options.number);
   }
 }
