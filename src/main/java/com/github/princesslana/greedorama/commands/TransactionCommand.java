@@ -37,7 +37,7 @@ public class TransactionCommand {
     public Integer number = 1;
   }
 
-  public DiscordResponse createTransaction(Options options, int quantity) {
+  private DiscordResponse createTransaction(Options options, int quantity) {
     if (options.number <= 0) {
       return Format.error("Number of shares must be greater than zero");
     }
@@ -57,7 +57,7 @@ public class TransactionCommand {
               var txn = Transaction.create(user, s, quantity);
               var response =
                   String.format(
-                      "```%s You %s %d share of (%s) %s for %s```",
+                      "```%s You %s %d share(s) of (%s) %s for %s```",
                       (quantity > 0) ? Emoji.BUY : Emoji.SELL,
                       (quantity > 0) ? "bought" : "sold",
                       options.number,
