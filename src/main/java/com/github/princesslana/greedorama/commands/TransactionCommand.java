@@ -54,7 +54,7 @@ public class TransactionCommand {
         .get(symbol)
         .map(
             s -> {
-              var txn = Transaction.buy(user, s, quantity);
+              var txn = Transaction.create(user, s, quantity);
               var response =
                   String.format(
                       "```%s You %s %d share of (%s) %s for %s```",

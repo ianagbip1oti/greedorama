@@ -44,7 +44,7 @@ public class Transaction {
     return unitPrice.multiply(quantity);
   }
 
-  public static Transaction buy(User who, Stock stock, int quantity) {
+  public static Transaction create(User who, Stock stock, int quantity) {
     return new Transaction(
         who.getId(), Instant.now(), stock.getSymbol(), quantity, stock.getLatestPrice());
   }
