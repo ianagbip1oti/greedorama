@@ -37,8 +37,7 @@ public class TransactionCommand {
     public Integer number = 1;
   }
 
-  @CommandHandler(commandName = "buy")
-  public DiscordResponse buy(Options options) {
+  private DiscordResponse createTransaction(Options options, int quantity) {
     if (options.number <= 0) {
       return Format.error("Number of shares must be greater than zero");
     }
@@ -55,17 +54,29 @@ public class TransactionCommand {
         .get(symbol)
         .map(
             s -> {
-              var txn = Transaction.buy(user, s, options.number);
-              transactions.add(txn);
-              return DiscordResponse.of(
+              var txn = Transaction.create(user, s, quantity);
+              var response =
                   String.format(
-                      "```%s You bought %d share of (%s) %s for %s```",
-                      Emoji.BUY,
+                      "```%s You %s %d share(s) of (%s) %s for %s```",
+                      (quantity > 0) ? Emoji.BUY : Emoji.SELL,
+                      (quantity > 0) ? "bought" : "sold",
                       options.number,
                       s.getSymbol(),
                       s.getCompanyName(),
-                      Format.money(txn.getTotalPrice())));
+                      Format.money(txn.getTotalPrice().abs()));
+              transactions.add(txn);
+              return DiscordResponse.of(response);
             })
         .orElse(Format.error("Could not find price for " + symbol));
+  }
+
+  @CommandHandler(commandName = "buy")
+  public DiscordResponse buy(Options options) {
+    return createTransaction(options, options.number);
+  }
+
+  @CommandHandler(commandName = "sell")
+  public DiscordResponse sell(Options options) {
+    return createTransaction(options, -options.number);
   }
 }
