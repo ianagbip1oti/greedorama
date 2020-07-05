@@ -58,7 +58,7 @@ public class TransactionCommand {
               var response =
                   String.format(
                       "```%s You %s %d share of (%s) %s for %s```",
-                      Emoji.BUY,
+                      (quantity > 0) ? Emoji.BUY : Emoji.SELL,
                       (quantity > 0) ? "bought" : "sold",
                       options.number,
                       s.getSymbol(),
