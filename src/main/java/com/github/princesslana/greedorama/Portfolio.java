@@ -2,6 +2,7 @@ package com.github.princesslana.greedorama;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ordering;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -13,6 +14,9 @@ import org.javamoney.moneta.Money;
 public class Portfolio {
 
   private static final MonetaryAmount STARTING_CASH = Money.of(100000, "USD");
+
+  public static final Ordering<Entry> BY_NET_WORTH =
+      Ordering.natural().reverse().onResultOf(Entry::getWorth);
 
   private final StockRepository stocks;
 
@@ -84,6 +88,10 @@ public class Portfolio {
                     e.getValue()))
         .filter(e -> e.getQuantity() != 0)
         .collect(Collectors.toList());
+  }
+
+  public ImmutableList<Transaction> getTransactions() {
+    return transactions;
   }
 
   private Map<String, Integer> getStockCounts() {
