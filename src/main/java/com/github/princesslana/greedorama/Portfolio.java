@@ -16,7 +16,7 @@ public class Portfolio {
   private static final MonetaryAmount STARTING_CASH = Money.of(100000, "USD");
 
   public static final Ordering<Entry> BY_NET_WORTH =
-          Ordering.natural().reverse().onResultOf(Entry::getWorth);
+      Ordering.natural().reverse().onResultOf(Entry::getWorth);
 
   private final StockRepository stocks;
 

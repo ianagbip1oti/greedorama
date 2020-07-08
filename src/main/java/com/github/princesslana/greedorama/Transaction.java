@@ -7,7 +7,7 @@ import javax.money.MonetaryAmount;
 public class Transaction {
 
   public static final Ordering<Transaction> BY_WHEN =
-          Ordering.natural().reverse().onResultOf(Transaction::getWhen);
+      Ordering.natural().reverse().onResultOf(Transaction::getWhen);
 
   private final String userId;
   private final Instant when;
