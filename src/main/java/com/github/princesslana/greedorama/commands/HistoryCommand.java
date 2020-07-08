@@ -4,7 +4,6 @@ import com.github.princesslana.greedorama.PortfolioRepository;
 import com.github.princesslana.greedorama.Transaction;
 import com.github.princesslana.greedorama.UserRepository;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
 import disparse.discord.smalld.DiscordRequest;
 import disparse.discord.smalld.DiscordResponse;
@@ -50,9 +49,6 @@ public class HistoryCommand {
     var txns = portfolio.getTransactions();
 
     var totalPages = (txns.size() + TXNS_PER_PAGE - 1) / TXNS_PER_PAGE;
-
-    Preconditions.checkArgument(
-        options.page <= totalPages && options.page > 0, "Page number is not in range!");
 
     if (options.page > totalPages || options.page <= 0) {
       return Format.error("Page number out of range");
