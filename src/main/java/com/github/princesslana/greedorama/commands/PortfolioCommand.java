@@ -5,7 +5,6 @@ import com.github.princesslana.greedorama.PortfolioRepository;
 import com.github.princesslana.greedorama.UserRepository;
 import com.google.common.base.Ascii;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Ordering;
 import disparse.discord.smalld.DiscordRequest;
 import disparse.discord.smalld.DiscordResponse;
 import disparse.parser.reflection.CommandHandler;
@@ -56,9 +55,7 @@ public class PortfolioCommand {
 
     var stockList = new StringBuilder();
 
-    var byNetWorth = Ordering.natural().reverse().onResultOf(Portfolio.Entry::getWorth);
-
-    for (var entry : byNetWorth.sortedCopy(portfolio.getStocks())) {
+    for (var entry : Portfolio.byNetWorth.sortedCopy(portfolio.getStocks())) {
       var line = String.format("%16s %-5s", Format.money(entry.getWorth()), entry.getSymbol());
 
       if (options.verbose) {

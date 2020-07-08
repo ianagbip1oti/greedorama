@@ -4,7 +4,6 @@ import com.github.princesslana.greedorama.PortfolioRepository;
 import com.github.princesslana.greedorama.Transaction;
 import com.github.princesslana.greedorama.UserRepository;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Ordering;
 import disparse.discord.smalld.DiscordRequest;
 import disparse.discord.smalld.DiscordResponse;
 import disparse.parser.reflection.CommandHandler;
@@ -43,7 +42,7 @@ public class HistoryCommand {
     var user = users.get(guildId, userId);
     var portfolio = portfolios.get(user);
 
-    var txns = portfolio.getTransactions();
+    var txns = Transaction.byWhen.sortedCopy(portfolio.getTransactions());
     var totalPages = (txns.size() + TXNS_PER_PAGE - 1) / TXNS_PER_PAGE;
     var page = options.page;
 
@@ -55,9 +54,6 @@ public class HistoryCommand {
 
     var dates = new HashSet<String>();
     var txnList = new StringBuilder();
-
-    var byWhen = Ordering.natural().reverse().onResultOf(Transaction::getWhen);
-    txns = byWhen.sortedCopy(txns);
 
     for (var i = (page - 1) * TXNS_PER_PAGE; i < page * TXNS_PER_PAGE; i++) {
 

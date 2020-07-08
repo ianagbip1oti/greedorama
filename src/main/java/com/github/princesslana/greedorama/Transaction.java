@@ -1,5 +1,6 @@
 package com.github.princesslana.greedorama;
 
+import com.google.common.collect.Ordering;
 import java.time.Instant;
 import javax.money.MonetaryAmount;
 
@@ -10,6 +11,9 @@ public class Transaction {
   private final String symbol;
   private final int quantity;
   private final MonetaryAmount unitPrice;
+
+  public static final Ordering<Transaction> byWhen =
+      Ordering.natural().reverse().onResultOf(Transaction::getWhen);
 
   public Transaction(
       String userId, Instant when, String symbol, int quantity, MonetaryAmount unitPrice) {
