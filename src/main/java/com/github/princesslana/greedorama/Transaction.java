@@ -6,14 +6,14 @@ import javax.money.MonetaryAmount;
 
 public class Transaction {
 
+  public static final Ordering<Transaction> BY_WHEN =
+          Ordering.natural().reverse().onResultOf(Transaction::getWhen);
+
   private final String userId;
   private final Instant when;
   private final String symbol;
   private final int quantity;
   private final MonetaryAmount unitPrice;
-
-  public static final Ordering<Transaction> byWhen =
-      Ordering.natural().reverse().onResultOf(Transaction::getWhen);
 
   public Transaction(
       String userId, Instant when, String symbol, int quantity, MonetaryAmount unitPrice) {

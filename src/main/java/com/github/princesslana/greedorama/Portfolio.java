@@ -15,12 +15,12 @@ public class Portfolio {
 
   private static final MonetaryAmount STARTING_CASH = Money.of(100000, "USD");
 
+  public static final Ordering<Entry> BY_NET_WORTH =
+          Ordering.natural().reverse().onResultOf(Entry::getWorth);
+
   private final StockRepository stocks;
 
   private final ImmutableList<Transaction> transactions;
-
-  public static final Ordering<Entry> byNetWorth =
-      Ordering.natural().reverse().onResultOf(Entry::getWorth);
 
   public Portfolio(StockRepository stocks) {
     this(stocks, ImmutableList.of());

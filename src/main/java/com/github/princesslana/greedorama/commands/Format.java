@@ -39,15 +39,6 @@ public class Format {
     return fmt.format(inst);
   }
 
-  public static String time(Instant inst) {
-    var fmt =
-        DateTimeFormatter.ofPattern("hh:mm a")
-            .withLocale(Locale.getDefault())
-            .withZone(ZoneId.systemDefault());
-
-    return fmt.format(inst);
-  }
-
   public static DiscordResponse error(String msg) {
     return DiscordResponse.of(String.format("```%s %s```", Emoji.ERROR, msg));
   }
