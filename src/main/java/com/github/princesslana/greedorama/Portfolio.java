@@ -72,6 +72,7 @@ public class Portfolio {
                                 new IllegalStateException(
                                     "Unknown stock in portfolio: " + e.getKey())),
                     e.getValue()))
+        .filter(e -> e.getQuantity() != 0)
         .collect(Collectors.toList());
   }
 
