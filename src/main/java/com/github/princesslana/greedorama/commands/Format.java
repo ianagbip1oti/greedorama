@@ -1,11 +1,9 @@
 package com.github.princesslana.greedorama.commands;
 
 import disparse.discord.smalld.DiscordResponse;
-
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Locale;
 import javax.money.MonetaryAmount;
 import javax.money.format.AmountFormatQueryBuilder;
@@ -25,16 +23,16 @@ public class Format {
 
   public static String date(Instant inst) {
     var fmt =
-            DateTimeFormatter.ofPattern("MMM dd uuuu")
-                    .withLocale(Locale.getDefault())
-                    .withZone(ZoneId.systemDefault());
+        DateTimeFormatter.ofPattern("MMM dd uuuu")
+            .withLocale(Locale.getDefault())
+            .withZone(ZoneId.systemDefault());
 
     return fmt.format(inst);
   }
 
   public static String time(Instant inst) {
     var fmt =
-            DateTimeFormatter.ofPattern("hh:mm a")
+        DateTimeFormatter.ofPattern("hh:mm a")
             .withLocale(Locale.getDefault())
             .withZone(ZoneId.systemDefault());
 
