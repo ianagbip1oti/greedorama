@@ -32,6 +32,9 @@ public class HistoryCommand {
   private static class Options {
     @Flag(shortName = 'p', longName = "page", description = "Display page")
     public Integer page = 1;
+
+    @Flag(shortName = 'v', longName = "verbose", description = "Display more detail")
+    public boolean verbose = false;
   }
 
   @CommandHandler(commandName = "history")
@@ -64,22 +67,31 @@ public class HistoryCommand {
       var txn = txns.get(i);
       var date = Format.date(txn.getWhen());
 
-      var line =
-          String.format(
-              "%15s %s: %s %s %d shares of %s for %s @ %s per share",
-              dates.contains(date) ? "" : date + ",",
-              Format.time(txn.getWhen()),
-              (txn.getQuantity() > 0) ? Emoji.BUY : Emoji.SELL,
-              (txn.getQuantity() > 0) ? "Bought" : "Sold",
-              Math.abs(txn.getQuantity()),
-              txn.getSymbol(),
-              Format.money(txn.getTotalPrice().abs()),
-              Format.money(txn.getUnitPrice()));
+      var line = new String();
 
-      // possible space for a verbose option?
+      if (options.verbose) {
+        line +=
+            String.format(
+                "%15s %s %s %d shares of %s for %s @ %s per share",
+                dates.contains(date) ? "" : date + ":",
+                (txn.getQuantity() > 0) ? Emoji.BUY : Emoji.SELL,
+                (txn.getQuantity() > 0) ? "Bought" : "Sold",
+                Math.abs(txn.getQuantity()),
+                txn.getSymbol(),
+                Format.money(txn.getTotalPrice().abs()),
+                Format.money(txn.getUnitPrice()));
+
+        dates.add(date);
+      } else {
+        line +=
+            String.format(
+                "%15s %11s %s",
+                Format.shortDate(txn.getWhen()),
+                Format.money(txn.getTotalPrice()).substring(1),
+                txn.getSymbol());
+      }
 
       txnList.append(line + "\n");
-      dates.add(date);
     }
 
     return DiscordResponse.of(

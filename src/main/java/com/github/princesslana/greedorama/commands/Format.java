@@ -30,6 +30,15 @@ public class Format {
     return fmt.format(inst);
   }
 
+  public static String shortDate(Instant inst) {
+    var fmt =
+        DateTimeFormatter.ofPattern("uuuu-MM-dd")
+            .withLocale(Locale.getDefault())
+            .withZone(ZoneId.systemDefault());
+
+    return fmt.format(inst);
+  }
+
   public static String time(Instant inst) {
     var fmt =
         DateTimeFormatter.ofPattern("hh:mm a")
