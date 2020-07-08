@@ -55,7 +55,7 @@ public class PortfolioCommand {
 
     var stockList = new StringBuilder();
 
-    for (var entry : Portfolio.byNetWorth.sortedCopy(portfolio.getStocks())) {
+    for (var entry : Portfolio.BY_NET_WORTH.sortedCopy(portfolio.getStocks())) {
       var line = String.format("%16s %-5s", Format.money(entry.getWorth()), entry.getSymbol());
 
       if (options.verbose) {

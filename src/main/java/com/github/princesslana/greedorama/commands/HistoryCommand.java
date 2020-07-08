@@ -45,7 +45,7 @@ public class HistoryCommand {
     var user = users.get(guildId, userId);
     var portfolio = portfolios.get(user);
 
-    var txns = Transaction.byWhen.sortedCopy(portfolio.getTransactions());
+    var txns = Transaction.BY_WHEN.sortedCopy(portfolio.getTransactions());
     var totalPages = (txns.size() + TXNS_PER_PAGE - 1) / TXNS_PER_PAGE;
     var page = options.page;
 
