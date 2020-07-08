@@ -86,6 +86,10 @@ public class Portfolio {
         .collect(Collectors.toList());
   }
 
+  public List<Transaction> getTransactions() {
+    return List.copyOf(transactions);
+  }
+
   private Map<String, Integer> getStockCounts() {
     return transactions
         .stream()
