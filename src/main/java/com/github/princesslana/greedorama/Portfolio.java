@@ -1,5 +1,6 @@
 package com.github.princesslana.greedorama;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -24,6 +25,15 @@ public class Portfolio {
   public Portfolio(StockRepository stocks, Iterable<Transaction> transactions) {
     this.stocks = stocks;
     this.transactions = ImmutableList.copyOf(transactions);
+  }
+
+  public void check(Transaction txn) {
+    Preconditions.checkArgument(
+        getCash().isGreaterThanOrEqualTo(txn.getTotalPrice()), "Insufficient funds");
+
+    var currentCount = getStockCounts().getOrDefault(txn.getSymbol(), 0);
+    Preconditions.checkArgument(
+        currentCount + txn.getQuantity() >= 0, "You do not have that amount of shares");
   }
 
   public MonetaryAmount getNetWorth() {
