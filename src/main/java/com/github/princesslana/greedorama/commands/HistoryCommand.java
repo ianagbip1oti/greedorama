@@ -37,9 +37,6 @@ public class HistoryCommand {
 
   @CommandHandler(commandName = "history")
   public DiscordResponse portfolio(Options options) {
-
-    var page = options.page;
-
     var guildId = request.getDispatcher().guildFromEvent(request.getEvent());
     var userId = request.getDispatcher().identityFromEvent(request.getEvent());
 
@@ -47,21 +44,19 @@ public class HistoryCommand {
     var portfolio = portfolios.get(user);
 
     var txns = portfolio.getTransactions();
-
     var totalPages = (txns.size() + TXNS_PER_PAGE - 1) / TXNS_PER_PAGE;
+    var page = options.page;
+
+    var pageText = String.format("Page %d of %d", options.page, totalPages);
 
     if (options.page > totalPages || options.page <= 0) {
       return Format.error("Page number out of range");
     }
 
-    var pageText = String.format("Page %d of %d", options.page, totalPages);
-
+    var dates = new HashSet<String>();
     var txnList = new StringBuilder();
 
     var byWhen = Ordering.natural().reverse().onResultOf(Transaction::getWhen);
-
-    var dates = new HashSet<String>();
-
     txns = byWhen.sortedCopy(txns);
 
     for (var i = (page - 1) * TXNS_PER_PAGE; i < page * TXNS_PER_PAGE; i++) {
@@ -84,6 +79,8 @@ public class HistoryCommand {
               txn.getSymbol(),
               Format.money(txn.getTotalPrice().abs()),
               Format.money(txn.getUnitPrice()));
+
+      // possible space for a verbose option?
 
       txnList.append(line + "\n");
       dates.add(date);
