@@ -1,8 +1,10 @@
 package com.github.princesslana.greedorama;
 
+import com.github.princesslana.somedb.EnableJooqCodeGen;
 import com.github.princesslana.somedb.TheDB;
 import disparse.discord.smalld.Dispatcher;
 
+@EnableJooqCodeGen(packageName = "com.github.princesslana.greedorama.db")
 public class Greedorama {
 
   public static void main(String[] args) {
